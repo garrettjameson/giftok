@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GifTok - responsible scrolling</title>
+    <!-- My own Style Sheet -->
+    <!-- <link rel="stylesheet" href="css/style.css"> -->
+    <!-- Bulma's Style Sheet -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="icon" type="image/png" href="img/Icon.png">
+</head>
+
+<body>
+    <nav class="navbar has-shadow is-white">
+        <!-- logo -->
+        <div class="navbar-brand">
+            <a class="navbar-item" href="#">
+                <img src="img/Icon.png" alt="icon" style="max-height: 8svh">
+            </a>
+            <a class="navbar-burger" id="burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </a>
+        </div>
+        <!-- links -->
+        <!-- JS event listener to toggle is-active -->
+        <div class="navbar-menu" id="nav-links">
+            <div class="navbar-end">
+                <a class="navbar-item" href="#">Home</a>
+                <a class="navbar-item" href="#">About</a>
+            </div>
+            <div class="navbar-end"></div>
+        </div>
+    </nav>
+    <!-- Main Page -->
+    <section class="section" style="max-height: 84svh;">
+        <div class="container">
+            <div class="columns">
+                <!-- Options Sidebar -->
+                <div class="column is-4">
+                    <div class="form">
+                        <div class="field">
+                            <label class="label">Categories</label>
+                            <div class="control">
+                                <input type="text" class="input" placeholder="E.g. Cats">
+                            </div>
+                            <p class="help">Enter in gif categories separated by a comma</p>
+                            <p id="selected-categories"></p>
+                        </div>
+                        <div class="field">
+                            <label class="label" for="clean-content">Clean Content?</label>
+                            <div class="control">
+                                <div class="select is-danger is-small">
+                                    <select id="clean-content">
+                                        <option value="yes" selected>Yes, only clean content</option>
+                                        <option value="no">No Restrictions</option>
+                                    </select>
+
+                                </div>
+
+                            </div>
+                            <!-- This is the place where a warning will pop up if the user selects "no restrictions" -->
+                            <p class="has-text-danger" id="#clean-msg"></p>
+                        </div>
+                    </div>
+                    <br>
+                    <h3 class="title is-3 m-1">Gifs Scrolled</h3>
+                    <progress class="progress is is-link" value="45" max="100">40%</progress>
+                </div>
+                <!-- Main Gif Display Area -->
+                <div class="column is-8">
+                    <!-- Container to contain Gif and buttons description -->
+                    <div class="buttons m-0" style="max-height: 8svh;">
+                        <button class="button is-link is-flex-grow-2 m-0">PREVIOUS</button>
+                    </div>
+                    <figure class="image">
+                        <img src="img/CatTyping.webp" alt="gif" style="max-height: 56svh;">
+                    </figure>
+                    <div class="buttons m-0" style="max-height: 8svh;">
+                        <button class="button is-link is-flex-grow-2 m-0">NEXT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="footer p-3" style="max-height: 8svh;">
+        <div class="content has-text-centered">
+            <p>
+                Copyright &copy Garrett Jameson, 2023
+            </p>
+        </div>
+    </footer>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
