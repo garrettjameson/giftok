@@ -1,12 +1,69 @@
 <!-- About Page! -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>GifTok - responsible scrolling</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="icon" type="image/png" href="img/Icon.png">
 </head>
+
 <body>
-    
+    <nav class="navbar has-shadow is-white">
+        <!-- logo -->
+        <div class="navbar-brand">
+            <a class="navbar-item" href="index.html">
+                <img src="img/Icon.png" alt="icon" style="max-height: 8svh">
+            </a>
+            <a class="navbar-burger" id="burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </a>
+        </div>
+        <!-- links -->
+        <!-- JS event listener to toggle is-active -->
+        <div class="navbar-menu" id="nav-links">
+            <div class="navbar-end">
+                <a class="navbar-item" href="index.html">Home</a>
+                <a class="navbar-item" href="about.html">About</a>
+            </div>
+            <div class="navbar-end"></div>
+        </div>
+    </nav>
+    <section class="hero is-link" style="max-height: 30svh" ;>
+        <div class="hero-body is-centered">
+            <p class="title">
+                GifTok
+            </p>
+            <p class="subtitle">
+                responsbile scrolling
+            </p>
+        </div>
+    </section>
+    <section class="section" style="max-height: 54svh;">
+        <div class="container">
+            <ul>
+                <li>Created by Garrett Jameson in 2023/2024 as practice for web app development</li>
+                <li>Inspired by getting stuck in a TikTok rabbit hole</li>
+                <li>Scroll gifs from the web but also keep your sanity</li>
+                <br>
+                <li>Uses <a href="bulma.io">Bulma CSS</a></li>
+                <li>Powered by <a href="giphy.com">Giphy</a></li>
+                <li>Enjoy responsbily</li>
+            </ul>
+        </div>
+    </section>
+    <script src="js/main.js"></script>
 </body>
+<footer class="footer p-3" style="max-height: 8svh;">
+    <div class="content has-text-centered">
+        <p>
+            Copyright &copy Garrett Jameson, 2024
+        </p>
+    </div>
+</footer>
+
 </html>

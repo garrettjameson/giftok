@@ -16,7 +16,7 @@
     <nav class="navbar has-shadow is-white">
         <!-- logo -->
         <div class="navbar-brand">
-            <a class="navbar-item" href="#">
+            <a class="navbar-item" href="index.html">
                 <img src="img/Icon.png" alt="icon" style="max-height: 8svh">
             </a>
             <a class="navbar-burger" id="burger">
@@ -29,14 +29,15 @@
         <!-- JS event listener to toggle is-active -->
         <div class="navbar-menu" id="nav-links">
             <div class="navbar-end">
-                <a class="navbar-item" href="#">Home</a>
-                <a class="navbar-item" href="#">About</a>
+                <a class="navbar-item" href="index.html">Home</a>
+                <a class="navbar-item" href="about.html">About</a>
             </div>
             <div class="navbar-end"></div>
         </div>
     </nav>
     <!-- Main Page -->
-    <section class="section" style="max-height: 84svh;">
+
+    <section class="section" id="main-section">
         <div class="container">
             <div class="columns">
                 <!-- Options Sidebar -->
@@ -63,24 +64,28 @@
 
                             </div>
                             <!-- This is the place where a warning will pop up if the user selects "no restrictions" -->
-                            <p class="has-text-danger" id="#clean-msg"></p>
+                            <p class="has-text-danger" id="clean-msg"></p>
                         </div>
                     </div>
                     <br>
                     <h3 class="title is-3 m-1">Gifs Scrolled</h3>
-                    <progress class="progress is is-link" value="45" max="100">40%</progress>
+                    <progress class="progress is is-link" value="1" max="10"></progress>
                 </div>
                 <!-- Main Gif Display Area -->
                 <div class="column is-8">
                     <!-- Container to contain Gif and buttons description -->
                     <div class="buttons m-0" style="max-height: 8svh;">
-                        <button class="button is-link is-flex-grow-2 m-0">PREVIOUS</button>
+                        <button class="button is-link is-flex-grow-2 m-0" id="prev-button">PREVIOUS</button>
                     </div>
                     <figure class="image">
-                        <img src="img/CatTyping.webp" alt="gif" style="max-height: 56svh;">
+                        <img src="img/CatTyping.webp" alt="gif" style="max-height: 56svh;" id="display-gif">
                     </figure>
                     <div class="buttons m-0" style="max-height: 8svh;">
-                        <button class="button is-link is-flex-grow-2 m-0">NEXT</button>
+                        <button class="button is-link is-flex-grow-2 m-0" id="next-button">NEXT</button>
+                    </div>
+                    <!-- Space for the Hero Banner when limit is reached -->
+                    <div id="done-msg">
+
                     </div>
                 </div>
             </div>
@@ -89,7 +94,7 @@
     <footer class="footer p-3" style="max-height: 8svh;">
         <div class="content has-text-centered">
             <p>
-                Copyright &copy Garrett Jameson, 2023
+                Copyright &copy Garrett Jameson, 2024
             </p>
         </div>
     </footer>
