@@ -21,7 +21,7 @@ cleanSelector.addEventListener('change', function () {
 })
 
 //image cycling
-let imgArray = ['CatTyping.webp', 'PoolDog.webp', 'Sheep.gif'];
+// let imgArray = ['CatTyping.webp', 'PoolDog.webp', 'Sheep.gif'];
 let imgIndex = 0;
 
 //counter for total number of gifs loaded
@@ -30,6 +30,7 @@ let gifCounter = 1;
 // the document objects to use for image cycling
 const gifDisplay = document.getElementById('display-gif');
 const buttonNodeList = document.querySelectorAll('button');
+
 
 //Add an event listener to both buttons
 buttonNodeList.forEach(function (button) {
@@ -52,7 +53,8 @@ buttonNodeList.forEach(function (button) {
             }
             gifCounter++;
         }
-        gifDisplay.src = "img/" + imgArray[imgIndex];
+        //This changes the gifDisplay to be the next image from the Giphy Fetch
+        gifDisplay.src = imgArray[imgIndex].images.fixed_height.url;
         updateGifCounterBar(gifCounter);
     });
 });
@@ -71,7 +73,25 @@ function updateGifCounterBar(counter) {
     }
 }
 
-function addDoneForTheDayMsg(){
+function addDoneForTheDayMsg() {
     document.getElementById('done-msg').innerHTML = '<section class="hero is-small is-danger"><div class="hero-body"><p class="hero-title">All Done for the Day, Go Outside!</p></div></section>';
     document.getElementById('main-section').style = 'max-height: 54svh';
 }
+
+//Do Async first with GiphyAPI
+//Read the API
+//promises async await (not promise chaining)
+//put await in front of function that returns a promise
+
+import { GiphyFetch } from 'https://cdn.jsdelivr.net/npm/@giphy/js-fetch-api@5.3.0/+esm';
+
+const gf = new GiphyFetch('yaE6B8Vn25A5EFfHk5y31RyKGiQwoa8r');
+
+// fetch 10 gifs
+const { data: imgArray } = await gf.trending({ limit: 10 });
+
+// Initialize the display source
+gifDisplay.src = imgArray[0].images.fixed_height.url;
+
+console.log(imgArray);
+console.log(imgArray[0].images.fixed_height.url);
