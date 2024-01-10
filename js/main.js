@@ -1,3 +1,53 @@
+//User input from the Categories form
+let userCats = [];
+const userFormInput = document.getElementById('user-search');
+const userFormButton = document.getElementById('user-button');
+const userSelectedCats = document.getElementById('selected-categories')
+
+//Add to the user list
+let userCatCount = 0;
+userFormButton.addEventListener("click", () => {
+    userCatCount++;
+    UpdateCategories(userCatCount);
+})
+
+function UpdateCategories(catCount) {
+
+    if (catCount === 1) {
+        userSelectedCats.innerText = userFormInput.value;
+    }
+    else {
+
+        userSelectedCats.innerText = `${userSelectedCats.textContent} ${userFormInput.value}`;
+    }
+    userFormInput.value = "";
+
+    // TODO: Working on a promise to allow the gif fetch to happen
+    let addCategory = new Promise(function (resolve, reject) {
+        resolve(userCats.push(userFormInput.value));
+    })
+
+
+}
+
+// GiphyFetch to get the gifs that we want
+const gifDisplay = document.getElementById('display-gif');
+
+import { GiphyFetch } from 'https://cdn.jsdelivr.net/npm/@giphy/js-fetch-api@5.3.0/+esm';
+
+const gf = new GiphyFetch('yaE6B8Vn25A5EFfHk5y31RyKGiQwoa8r');
+
+// fetch 10 gifs
+
+// TODO: Working on using a promise resolve to execute the gif search
+addCategory.then(async function () {
+    const { data: imgArray } = await gf.search(userCats[0], { lang: 'en', limit: 10 });
+    console.log(imgArray);
+    // Initialize the display source
+    gifDisplay.src = imgArray[0].images.fixed_height.url;
+});
+
+
 //mobile menu
 const burgerIcon = document.querySelector('#burger');
 const navbarMenu = document.querySelector('#nav-links');
@@ -28,7 +78,6 @@ let imgIndex = 0;
 let gifCounter = 1;
 
 // the document objects to use for image cycling
-const gifDisplay = document.getElementById('display-gif');
 const buttonNodeList = document.querySelectorAll('button');
 
 
@@ -83,15 +132,5 @@ function addDoneForTheDayMsg() {
 //promises async await (not promise chaining)
 //put await in front of function that returns a promise
 
-import { GiphyFetch } from 'https://cdn.jsdelivr.net/npm/@giphy/js-fetch-api@5.3.0/+esm';
 
-const gf = new GiphyFetch('yaE6B8Vn25A5EFfHk5y31RyKGiQwoa8r');
 
-// fetch 10 gifs
-const { data: imgArray } = await gf.trending({ limit: 10 });
-
-// Initialize the display source
-gifDisplay.src = imgArray[0].images.fixed_height.url;
-
-console.log(imgArray);
-console.log(imgArray[0].images.fixed_height.url);
