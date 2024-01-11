@@ -3,6 +3,7 @@ let userCats = [];
 const userFormInput = document.getElementById('user-search');
 const userFormButton = document.getElementById('user-button');
 const userSelectedCats = document.getElementById('selected-categories')
+const gifDisplay = document.getElementById('display-gif');
 
 //Add to the user list
 let userCatCount = 0;
@@ -14,24 +15,26 @@ userFormButton.addEventListener("click", () => {
 function UpdateCategories(catCount) {
 
     if (catCount === 1) {
+        //Why does this only work to put something there after the first category is entered?
         userSelectedCats.innerText = userFormInput.value;
     }
     else {
 
         userSelectedCats.innerText = `${userSelectedCats.textContent} ${userFormInput.value}`;
     }
+    userCats.push(userFormInput.value);
     userFormInput.value = "";
 
     // TODO: Working on a promise to allow the gif fetch to happen
-    let addCategory = new Promise(function (resolve, reject) {
-        resolve(userCats.push(userFormInput.value));
+    return new Promise(function (resolve, reject) {
+        resolve();
     })
 
 
 }
 
 // GiphyFetch to get the gifs that we want
-const gifDisplay = document.getElementById('display-gif');
+
 
 import { GiphyFetch } from 'https://cdn.jsdelivr.net/npm/@giphy/js-fetch-api@5.3.0/+esm';
 
@@ -39,14 +42,20 @@ const gf = new GiphyFetch('yaE6B8Vn25A5EFfHk5y31RyKGiQwoa8r');
 
 // fetch 10 gifs
 
-// TODO: Working on using a promise resolve to execute the gif search
-addCategory.then(async function () {
-    const { data: imgArray } = await gf.search(userCats[0], { lang: 'en', limit: 10 });
-    console.log(imgArray);
-    // Initialize the display source
-    gifDisplay.src = imgArray[0].images.fixed_height.url;
-});
+let { data: imgArray } = [];
 
+// TODO: Working on using a promise resolve to execute the gif search
+// This framework is what Chat recommended. But Why would I need to have an event listener if I have a promise.then ?
+// Seems like the promise is only resolving once. I want a new promise to resolve each time. I want the imgArray to be based upon a new search every time.
+userFormButton.addEventListener("click", () => {
+    UpdateCategories(userCatCount).then(async function () {
+
+        imgArray = await gf.search(userCats[0], { lang: 'en', limit: 10 });
+        console.log(imgArray);
+        // Initialize the display source
+        gifDisplay.src = imgArray.data[0].images.fixed_height.url;
+    });
+});
 
 //mobile menu
 const burgerIcon = document.querySelector('#burger');
@@ -71,7 +80,6 @@ cleanSelector.addEventListener('change', function () {
 })
 
 //image cycling
-// let imgArray = ['CatTyping.webp', 'PoolDog.webp', 'Sheep.gif'];
 let imgIndex = 0;
 
 //counter for total number of gifs loaded
@@ -87,14 +95,14 @@ buttonNodeList.forEach(function (button) {
         //function checks which button and then increments or decrements the image index as needed
         if (this.id === 'prev-button') {
             if (imgIndex === 0) {
-                imgIndex = imgArray.length - 1;
+                imgIndex = imgArray.data.length - 1;
             }
             else {
                 imgIndex--;
             }
         }
         else if (this.id === 'next-button') {
-            if (imgIndex === imgArray.length - 1) {
+            if (imgIndex === imgArray.data.length - 1) {
                 imgIndex = 0;
             }
             else {
@@ -103,7 +111,7 @@ buttonNodeList.forEach(function (button) {
             gifCounter++;
         }
         //This changes the gifDisplay to be the next image from the Giphy Fetch
-        gifDisplay.src = imgArray[imgIndex].images.fixed_height.url;
+        gifDisplay.src = imgArray.data[imgIndex].images.fixed_height.url;
         updateGifCounterBar(gifCounter);
     });
 });
