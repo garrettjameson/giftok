@@ -30,7 +30,22 @@ userFormButton.addEventListener("click", async () => {
 async function fetchThenUpdateArray(triggerEvent) {
     // This is extracting just the data from the fetch and putting it in a temp array
     // searches with the most recent entered term
+    userCats.forEach(async (cat)=>{
+        console.log(cat);
+        
+    })
+
+    console.log(userRating);
     let { data: tmpImgArray } = await gf.search(userCats[userCatCount - 1], { lang: 'en', limit: 10, rating: userRating })
+
+    // use array.map instead of push
+    // map, filter, reduce, forEach - functional programming
+    // array spread operator - allows for each array concat
+    // cannot use push on arrays in react
+
+    //TODO: map with key search terms to display near image
+    //TODO: removing a search term after entered
+    //TODO: Reset search/clear button
 
     //TODO: If the number of usercats has not been updated, then I want to replace the entire array (for rating changes)
     //If the number of usercats has been updated
@@ -43,8 +58,6 @@ async function fetchThenUpdateArray(triggerEvent) {
     else if (triggerEvent === "change") {
         imgArray = tmpImgArray;
     }
-
-    console.log(imgArray);
 
     // Call the shuffler to rearrange order of gifs whenever the user adds a new search term.
     imgArray = shuffleArray(imgArray);
@@ -68,9 +81,6 @@ function UpdateCategories(catCount) {
     userCats.push(userFormInput.value);
     userFormInput.value = "";
 
-
-
-
 }
 
 
@@ -88,9 +98,8 @@ const cleanMessage = document.getElementById('clean-msg');
 // default rating is PG (level 2)
 let userRating = 'pg';
 
-cleanSelector.addEventListener("change", function () {
+cleanSelector.addEventListener("change", async function () {
     //immeditely refetch the img array
-    fetchThenUpdateArray("change");
     if (this.value === 'yes') {
         // zero it out if it is yes to clean only
         cleanMessage.textContent = '';
@@ -100,6 +109,7 @@ cleanSelector.addEventListener("change", function () {
         cleanMessage.textContent = 'WARNING! POTENTIAL NSFW CONTENT';
         userRating = 'r';
     }
+    await fetchThenUpdateArray("change");
 })
 
 //image cycling
