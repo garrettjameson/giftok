@@ -4,13 +4,56 @@ const userFormInput = document.getElementById('user-search');
 const userFormButton = document.getElementById('user-button');
 const userSelectedCats = document.getElementById('selected-categories')
 const gifDisplay = document.getElementById('display-gif');
+// GiphyFetch to get the gifs that we want
 
+import { GiphyFetch } from 'https://cdn.jsdelivr.net/npm/@giphy/js-fetch-api@5.3.0/+esm';
+
+const gf = new GiphyFetch('yaE6B8Vn25A5EFfHk5y31RyKGiQwoa8r');
+
+// fetch 10 gifs
+
+let imgArray = [];
 //Add to the user list
 let userCatCount = 0;
-userFormButton.addEventListener("click", () => {
+userFormButton.addEventListener("click", async () => {
+    // call to update the categories array
     userCatCount++;
     UpdateCategories(userCatCount);
-})
+
+    // call to fetch
+    await fetchThenUpdateArray("click");
+    //call the update to the max gifs allowed
+    updatemaxGifs(userCatCount);
+
+});
+
+async function fetchThenUpdateArray(triggerEvent) {
+    // This is extracting just the data from the fetch and putting it in a temp array
+    // searches with the most recent entered term
+    let { data: tmpImgArray } = await gf.search(userCats[userCatCount - 1], { lang: 'en', limit: 10, rating: userRating })
+
+    //TODO: If the number of usercats has not been updated, then I want to replace the entire array (for rating changes)
+    //If the number of usercats has been updated
+    //Loop through each img pulled and push them one by one to the imgArry
+    if (triggerEvent === "click") {
+        tmpImgArray.forEach((img) => {
+            imgArray.push(img);
+        });
+    }
+    else if (triggerEvent === "change") {
+        imgArray = tmpImgArray;
+    }
+
+    console.log(imgArray);
+
+    // Call the shuffler to rearrange order of gifs whenever the user adds a new search term.
+    imgArray = shuffleArray(imgArray);
+    // Initialize the display source
+    gifDisplay.src = imgArray[0].images.fixed_height.url;
+
+    //call rating counter log
+    ratingCounter(imgArray);
+}
 
 function UpdateCategories(catCount) {
 
@@ -25,37 +68,11 @@ function UpdateCategories(catCount) {
     userCats.push(userFormInput.value);
     userFormInput.value = "";
 
-    // TODO: Working on a promise to allow the gif fetch to happen
-    return new Promise(function (resolve, reject) {
-        resolve();
-    })
+
 
 
 }
 
-// GiphyFetch to get the gifs that we want
-
-
-import { GiphyFetch } from 'https://cdn.jsdelivr.net/npm/@giphy/js-fetch-api@5.3.0/+esm';
-
-const gf = new GiphyFetch('yaE6B8Vn25A5EFfHk5y31RyKGiQwoa8r');
-
-// fetch 10 gifs
-
-let { data: imgArray } = [];
-
-// TODO: Working on using a promise resolve to execute the gif search
-// This framework is what Chat recommended. But Why would I need to have an event listener if I have a promise.then ?
-// Seems like the promise is only resolving once. I want a new promise to resolve each time. I want the imgArray to be based upon a new search every time.
-userFormButton.addEventListener("click", () => {
-    UpdateCategories(userCatCount).then(async function () {
-
-        imgArray = await gf.search(userCats[0], { lang: 'en', limit: 10 });
-        console.log(imgArray);
-        // Initialize the display source
-        gifDisplay.src = imgArray.data[0].images.fixed_height.url;
-    });
-});
 
 //mobile menu
 const burgerIcon = document.querySelector('#burger');
@@ -68,14 +85,20 @@ burgerIcon.addEventListener('click', () => {
 //options selectors
 const cleanSelector = document.querySelector('#clean-content');
 const cleanMessage = document.getElementById('clean-msg');
+// default rating is PG (level 2)
+let userRating = 'pg';
 
-cleanSelector.addEventListener('change', function () {
+cleanSelector.addEventListener("change", function () {
+    //immeditely refetch the img array
+    fetchThenUpdateArray("change");
     if (this.value === 'yes') {
         // zero it out if it is yes to clean only
         cleanMessage.textContent = '';
+        userRating = 'pg';
     }
     else {
         cleanMessage.textContent = 'WARNING! POTENTIAL NSFW CONTENT';
+        userRating = 'r';
     }
 })
 
@@ -95,14 +118,14 @@ buttonNodeList.forEach(function (button) {
         //function checks which button and then increments or decrements the image index as needed
         if (this.id === 'prev-button') {
             if (imgIndex === 0) {
-                imgIndex = imgArray.data.length - 1;
+                imgIndex = imgArray.length - 1;
             }
             else {
                 imgIndex--;
             }
         }
         else if (this.id === 'next-button') {
-            if (imgIndex === imgArray.data.length - 1) {
+            if (imgIndex === imgArray.length - 1) {
                 imgIndex = 0;
             }
             else {
@@ -111,7 +134,7 @@ buttonNodeList.forEach(function (button) {
             gifCounter++;
         }
         //This changes the gifDisplay to be the next image from the Giphy Fetch
-        gifDisplay.src = imgArray.data[imgIndex].images.fixed_height.url;
+        gifDisplay.src = imgArray[imgIndex].images.fixed_height.url;
         updateGifCounterBar(gifCounter);
     });
 });
@@ -135,10 +158,47 @@ function addDoneForTheDayMsg() {
     document.getElementById('main-section').style = 'max-height: 54svh';
 }
 
-//Do Async first with GiphyAPI
-//Read the API
-//promises async await (not promise chaining)
-//put await in front of function that returns a promise
+//Stolen from the internet. Should shuffle the items of an array to a new index.
+function shuffleArray(array) {
+    for (let i = array.length - 1; i >= 0; i--) {
+        const j = Math.floor(Math.random() * array.length);
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
 
+// This function takes the number of user input categories and scales the number of gifs scrollable by a factor of 10. Capped at 50 gifs.
+const maxGifsBar = document.getElementById("max-gifs-allowed");
+function updatemaxGifs(userCatCount) {
+    if (userCatCount <= 5) {
+        //set the max number to the categories times ten (10)
+        maxGifsBar.max = userCatCount * 10;
+    }
+    else {
+        //set the max number to 50
+        maxGifsBar.max = 50;
+    }
+}
 
+//loops through array and prints the number of each type of rating
+function ratingCounter(array) {
+    let rCounter = 0;
+    let pg13Counter = 0;
+    let pgAndBelowCounter = 0;
+    array.forEach(element => {
+        if (element.rating === 'r') {
+            rCounter++;
+        }
+        else if (element.rating === 'pg-13') {
+            pg13Counter++;
+        }
+        else {
+            pgAndBelowCounter++;
+        }
 
+    });
+    console.log("Logging the Ratings of Array Imgs");
+    console.log(`Number of R-rated gifs: ${rCounter}`);
+    console.log(`Number of PG-13-rated gifs: ${pg13Counter}`);
+    console.log(`Number of PG and Below gifs: ${pgAndBelowCounter}`);
+}
