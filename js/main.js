@@ -29,14 +29,25 @@ userFormButton.addEventListener("click", async () => {
 
 async function fetchThenUpdateArray(triggerEvent) {
     // This is extracting just the data from the fetch and putting it in a temp array
-    // searches with the most recent entered term
-    userCats.forEach(async (cat)=>{
-        console.log(cat);
-        
-    })
+    // searches all entered search terms
+    // Trying to first create a map so that the search terms are associated with the images themselves.
+    let imgMap = new Map();
 
-    console.log(userRating);
-    let { data: tmpImgArray } = await gf.search(userCats[userCatCount - 1], { lang: 'en', limit: 10, rating: userRating })
+    // Replaced the forEach because that method does not wait for async to finish according to ChatGPT
+    for (const cat of userCats) {
+        //Random starting location, SDK documentation says 4999 is max
+        //With some experimentation, rare searches might not have enough for 100 to work, so the search won't populate right away. Not ideal
+        let imgOffset = Math.floor(Math.random() * 100);
+        console.log(imgOffset);
+        let { data: tmpImgArray } = await gf.search(cat, { lang: 'en', limit: 10, rating: userRating, offset: imgOffset})
+        imgMap.set(cat, tmpImgArray);
+    };
+
+    // console.log(imgMap);
+    // imgMap.forEach((values, key) => {
+    //     console.log(values, key);
+    // });
+
 
     // use array.map instead of push
     // map, filter, reduce, forEach - functional programming
@@ -44,25 +55,23 @@ async function fetchThenUpdateArray(triggerEvent) {
     // cannot use push on arrays in react
 
     //TODO: map with key search terms to display near image
+    //Through multidimensional array? Or through the use of the img id? Like img id from the original pull creates map of search term and ids 
+    //So that when the img is displayed, the overlay has the search term, also possible to make this option a toggle and a bunch of info comes up, like search term associated, rating of gif, etc.
     //TODO: removing a search term after entered
     //TODO: Reset search/clear button
 
     //TODO: If the number of usercats has not been updated, then I want to replace the entire array (for rating changes)
     //If the number of usercats has been updated
     //Loop through each img pulled and push them one by one to the imgArry
-    if (triggerEvent === "click") {
-        tmpImgArray.forEach((img) => {
-            imgArray.push(img);
-        });
-    }
-    else if (triggerEvent === "change") {
-        imgArray = tmpImgArray;
-    }
+
+    // Create an array from the key value pairs of the imgMap
+    imgArray = arrayFromMap(imgMap);
 
     // Call the shuffler to rearrange order of gifs whenever the user adds a new search term.
     imgArray = shuffleArray(imgArray);
+
     // Initialize the display source
-    gifDisplay.src = imgArray[0].images.fixed_height.url;
+    gifDisplay.src = imgArray[0].images.fixed_width.url;
 
     //call rating counter log
     ratingCounter(imgArray);
@@ -174,6 +183,20 @@ function shuffleArray(array) {
         const j = Math.floor(Math.random() * array.length);
         [array[i], array[j]] = [array[j], array[i]];
     }
+    return array;
+}
+
+function arrayFromMap(map) {
+    //Create an Array to store result in
+    let array = [];
+
+    map.forEach((values, key) => {
+
+        //Spread Syntax to create new array
+        array = [...array, ...values];
+    })
+
+    //Return the array
     return array;
 }
 
