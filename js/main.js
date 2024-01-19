@@ -18,16 +18,16 @@ let userCatCount = 0;
 userFormButton.addEventListener("click", async () => {
     // call to update the categories array
     userCatCount++;
-    UpdateCategories(userCatCount);
+    addCategory();
 
     // call to fetch
-    await fetchThenUpdateArray("click");
+    await fetchThenUpdateArray();
     //call the update to the max gifs allowed
     updatemaxGifs(userCatCount);
 
 });
 
-async function fetchThenUpdateArray(triggerEvent) {
+async function fetchThenUpdateArray() {
     // This is extracting just the data from the fetch and putting it in a temp array
     // searches all entered search terms
     // Trying to first create a map so that the search terms are associated with the images themselves.
@@ -38,15 +38,11 @@ async function fetchThenUpdateArray(triggerEvent) {
         //Random starting location, SDK documentation says 4999 is max
         //With some experimentation, rare searches might not have enough for 100 to work, so the search won't populate right away. Not ideal
         let imgOffset = Math.floor(Math.random() * 100);
-        console.log(imgOffset);
-        let { data: tmpImgArray } = await gf.search(cat, { lang: 'en', limit: 10, rating: userRating, offset: imgOffset})
+
+        let { data: tmpImgArray } = await gf.search(cat, { lang: 'en', limit: 10, rating: userRating, offset: imgOffset })
+
         imgMap.set(cat, tmpImgArray);
     };
-
-    // console.log(imgMap);
-    // imgMap.forEach((values, key) => {
-    //     console.log(values, key);
-    // });
 
 
     // use array.map instead of push
@@ -57,12 +53,7 @@ async function fetchThenUpdateArray(triggerEvent) {
     //TODO: map with key search terms to display near image
     //Through multidimensional array? Or through the use of the img id? Like img id from the original pull creates map of search term and ids 
     //So that when the img is displayed, the overlay has the search term, also possible to make this option a toggle and a bunch of info comes up, like search term associated, rating of gif, etc.
-    //TODO: removing a search term after entered
-    //TODO: Reset search/clear button
 
-    //TODO: If the number of usercats has not been updated, then I want to replace the entire array (for rating changes)
-    //If the number of usercats has been updated
-    //Loop through each img pulled and push them one by one to the imgArry
 
     // Create an array from the key value pairs of the imgMap
     imgArray = arrayFromMap(imgMap);
@@ -77,20 +68,15 @@ async function fetchThenUpdateArray(triggerEvent) {
     ratingCounter(imgArray);
 }
 
-function UpdateCategories(catCount) {
+function addCategory() {
 
-    if (catCount === 1) {
-        //Why does this only work to put something there after the first category is entered?
-        userSelectedCats.innerText = userFormInput.value;
-    }
-    else {
-
-        userSelectedCats.innerText = `${userSelectedCats.textContent} ${userFormInput.value}`;
-    }
+    userSelectedCats.innerHTML += `<button class = "button" id = "button-category-${userFormInput.value}">${userFormInput.value}</button>`;
     userCats.push(userFormInput.value);
     userFormInput.value = "";
 
 }
+
+
 
 
 //mobile menu
@@ -190,10 +176,11 @@ function arrayFromMap(map) {
     //Create an Array to store result in
     let array = [];
 
-    map.forEach((values, key) => {
-
+    map.forEach((values, searchTerm) => {
         //Spread Syntax to create new array
-        array = [...array, ...values];
+        array = [...array, ...values.map( (value) => {
+            return {...value, searchTerm}
+        })];
     })
 
     //Return the array
@@ -235,3 +222,23 @@ function ratingCounter(array) {
     console.log(`Number of PG-13-rated gifs: ${pg13Counter}`);
     console.log(`Number of PG and Below gifs: ${pgAndBelowCounter}`);
 }
+
+//TODO: removing a search term after entered
+
+//First set up an event listener for button clicks on any of the buttons
+userSelectedCats.addEventListener("click", (e) => {
+   
+    //Creating a copy of userCats with only items that are NOT the specified target innerHTML
+    userCats = userCats.filter(function (cat){
+        return !(cat === e.target.innerHTML);
+    })
+
+    //Update the search
+    fetchThenUpdateArray();
+
+    //remove the element
+    document.getElementById(e.target.id).remove();
+
+});
+
+//TODO: Reset search/clear button
