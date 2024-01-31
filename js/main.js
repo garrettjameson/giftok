@@ -4,6 +4,7 @@ const userFormInput = document.getElementById('user-search');
 const userFormButton = document.getElementById('user-button');
 const userSelectedCats = document.getElementById('selected-categories')
 const gifDisplay = document.getElementById('display-gif');
+userFormInput.focus();
 // GiphyFetch to get the gifs that we want
 
 import { GiphyFetch } from 'https://cdn.jsdelivr.net/npm/@giphy/js-fetch-api@5.3.0/+esm';
@@ -16,14 +17,16 @@ let imgArray = [];
 //Add to the user list
 let userCatCount = 0;
 userFormButton.addEventListener("click", async () => {
-    // call to update the categories array
-    userCatCount++;
-    addCategory();
+    if (userFormInput.value) {
+        // call to update the categories array
+        userCatCount++;
+        addCategory();
 
-    // call to fetch
-    await fetchThenUpdateArray();
-    //call the update to the max gifs allowed
-    updatemaxGifs(userCatCount);
+        // call to fetch
+        await fetchThenUpdateArray();
+        //call the update to the max gifs allowed
+        updatemaxGifs(userCatCount);
+    }
 
 });
 
@@ -44,17 +47,6 @@ async function fetchThenUpdateArray() {
         imgMap.set(cat, tmpImgArray);
     };
 
-
-    // use array.map instead of push
-    // map, filter, reduce, forEach - functional programming
-    // array spread operator - allows for each array concat
-    // cannot use push on arrays in react
-
-    //TODO: map with key search terms to display near image
-    //Through multidimensional array? Or through the use of the img id? Like img id from the original pull creates map of search term and ids 
-    //So that when the img is displayed, the overlay has the search term, also possible to make this option a toggle and a bunch of info comes up, like search term associated, rating of gif, etc.
-
-
     // Create an array from the key value pairs of the imgMap
     imgArray = arrayFromMap(imgMap);
 
@@ -64,20 +56,40 @@ async function fetchThenUpdateArray() {
     // Initialize the display source
     gifDisplay.src = imgArray[0].images.fixed_width.url;
 
+    // place search term on bottom right of image
+    displaySearchTerm(0);
+
+
     //call rating counter log
     ratingCounter(imgArray);
 }
 
 function addCategory() {
-
     userSelectedCats.innerHTML += `<button class = "button" id = "button-category-${userFormInput.value}">${userFormInput.value}</button>`;
     userCats.push(userFormInput.value);
     userFormInput.value = "";
 
 }
 
+const associatedSearchTerm = document.getElementById("search-term");
+
+function displaySearchTerm(currIndex){
+    associatedSearchTerm.innerText = "Cat: " + imgArray[currIndex].searchTerm
+    associatedSearchTerm.classList.add("box");
+}
 
 
+addEventListener("keydown", (e) =>{
+    if (e.key === "Enter"){
+    console.log(e.key);
+    if (userFormInput.value){
+    addCategory();
+    fetchThenUpdateArray();
+    userCatCount++;
+    updatemaxGifs(userCatCount);
+    }
+    }
+})
 
 //mobile menu
 const burgerIcon = document.querySelector('#burger');
@@ -141,6 +153,7 @@ buttonNodeList.forEach(function (button) {
         //This changes the gifDisplay to be the next image from the Giphy Fetch
         gifDisplay.src = imgArray[imgIndex].images.fixed_height.url;
         updateGifCounterBar(gifCounter);
+        displaySearchTerm(imgIndex);
     });
 });
 
@@ -178,8 +191,8 @@ function arrayFromMap(map) {
 
     map.forEach((values, searchTerm) => {
         //Spread Syntax to create new array
-        array = [...array, ...values.map( (value) => {
-            return {...value, searchTerm}
+        array = [...array, ...values.map((value) => {
+            return { ...value, searchTerm }
         })];
     })
 
@@ -190,7 +203,10 @@ function arrayFromMap(map) {
 // This function takes the number of user input categories and scales the number of gifs scrollable by a factor of 10. Capped at 50 gifs.
 const maxGifsBar = document.getElementById("max-gifs-allowed");
 function updatemaxGifs(userCatCount) {
-    if (userCatCount <= 5) {
+    if (userCatCount === 0) {
+        maxGifsBar.max = 10;
+    }
+    else if (userCatCount <= 5) {
         //set the max number to the categories times ten (10)
         maxGifsBar.max = userCatCount * 10;
     }
@@ -227,18 +243,42 @@ function ratingCounter(array) {
 
 //First set up an event listener for button clicks on any of the buttons
 userSelectedCats.addEventListener("click", (e) => {
-   
+
     //Creating a copy of userCats with only items that are NOT the specified target innerHTML
-    userCats = userCats.filter(function (cat){
+    userCats = userCats.filter(function (cat) {
         return !(cat === e.target.innerHTML);
     })
+    userCatCount = userCats.length;
+    // only update the search if there are categories left
+    if (userCats.length > 0) {
+        console.log(userCats);
+        //Update the search
+        fetchThenUpdateArray();
+        //remove the element
+        document.getElementById(e.target.id).remove();
+    }
+    else {
+        //call the reset all function
+        resetAll();
+    }
 
-    //Update the search
-    fetchThenUpdateArray();
-
-    //remove the element
-    document.getElementById(e.target.id).remove();
 
 });
 
-//TODO: Reset search/clear button
+// Reset search/clear button
+const userResetButton = document.getElementById("user-reset");
+
+userResetButton.addEventListener("click", () => {
+    resetAll();
+});
+
+function resetAll() {
+    document.getElementById("selected-categories").innerHTML = "";
+    gifDisplay.src = "img/CatTyping.webp";
+    userCats = [];
+    imgArray = [];
+    associatedSearchTerm.innerText = "";
+    associatedSearchTerm.classList.remove("box");
+    userCatCount = 0;
+    updatemaxGifs(userCatCount);
+}

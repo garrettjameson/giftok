@@ -48,11 +48,12 @@
                             <div class="control">
                                 <input type="search" id="user-search" placeholder="E.g. Cats">
                                 <input type="submit" id="user-button" />
+                                <input type="button" value="Reset" id="user-reset" />
                             </div>
                             <p class="help">Enter in gif category then click submit. Enter more categories if you wish.
                             </p>
                             <div class="buttons" id="selected-categories">
-                                
+
                             </div>
 
                         </div>
@@ -82,7 +83,8 @@
                     <div class="buttons m-0" style="max-height: 8svh;">
                         <button class="button is-link is-flex-grow-2 m-0" id="prev-button">PREVIOUS</button>
                     </div>
-                    <figure class="image">
+                    <figure class="image" style="position: relative;">
+                        <div id="search-term" style="position: absolute; top: 85%; width: auto; padding: 0.4em;"></div>
                         <img src="img/CatTyping.webp" alt="gif" style="max-height: 56svh;" id="display-gif">
                     </figure>
                     <div class="buttons m-0" style="max-height: 8svh;">
