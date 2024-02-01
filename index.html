@@ -41,7 +41,7 @@
         <div class="container">
             <div class="columns">
                 <!-- Options Sidebar -->
-                <div class="column is-4">
+                <div class="column is-3">
                     <div class="form">
                         <div class="field">
                             <label class="label" for="user-search">Categories</label>
@@ -78,14 +78,14 @@
                     <progress class="progress is is-link" value="1" max="10" id="max-gifs-allowed"></progress>
                 </div>
                 <!-- Main Gif Display Area -->
-                <div class="column is-8">
+                <div class="column is-9">
                     <!-- Container to contain Gif and buttons description -->
                     <div class="buttons m-0" style="max-height: 8svh;">
                         <button class="button is-link is-flex-grow-2 m-0" id="prev-button">PREVIOUS</button>
                     </div>
-                    <figure class="image" style="position: relative;">
+                    <figure class="image" style="position: relative;"> 
                         <div id="search-term" style="position: absolute; top: 85%; width: auto; padding: 0.4em;"></div>
-                        <img src="img/CatTyping.webp" alt="gif" style="max-height: 56svh;" id="display-gif">
+                        <img src="img/CatTyping.webp" alt="gif" style="max-height: 56svh; aspect-ratio: 16/9; width: 100%;" id="display-gif">
                     </figure>
                     <div class="buttons m-0" style="max-height: 8svh;">
                         <button class="button is-link is-flex-grow-2 m-0" id="next-button">NEXT</button>

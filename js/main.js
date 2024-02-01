@@ -151,7 +151,7 @@ buttonNodeList.forEach(function (button) {
             gifCounter++;
         }
         //This changes the gifDisplay to be the next image from the Giphy Fetch
-        gifDisplay.src = imgArray[imgIndex].images.fixed_height.url;
+        gifDisplay.src = imgArray[imgIndex].images.original.url;
         updateGifCounterBar(gifCounter);
         displaySearchTerm(imgIndex);
     });
