@@ -239,7 +239,7 @@ function ratingCounter(array) {
     console.log(`Number of PG and Below gifs: ${pgAndBelowCounter}`);
 }
 
-//TODO: removing a search term after entered
+// removing a search term after entered
 
 //First set up an event listener for button clicks on any of the buttons
 userSelectedCats.addEventListener("click", (e) => {
