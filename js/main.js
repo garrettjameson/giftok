@@ -73,21 +73,21 @@ function addCategory() {
 
 const associatedSearchTerm = document.getElementById("search-term");
 
-function displaySearchTerm(currIndex){
+function displaySearchTerm(currIndex) {
     associatedSearchTerm.innerText = "Cat: " + imgArray[currIndex].searchTerm
     associatedSearchTerm.classList.add("box");
 }
 
 
-addEventListener("keydown", (e) =>{
-    if (e.key === "Enter"){
-    console.log(e.key);
-    if (userFormInput.value){
-    addCategory();
-    fetchThenUpdateArray();
-    userCatCount++;
-    updatemaxGifs(userCatCount);
-    }
+addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        console.log(e.key);
+        if (userFormInput.value) {
+            addCategory();
+            fetchThenUpdateArray();
+            userCatCount++;
+            updatemaxGifs(userCatCount);
+        }
     }
 })
 
@@ -116,7 +116,7 @@ cleanSelector.addEventListener("change", async function () {
         cleanMessage.textContent = 'WARNING! POTENTIAL NSFW CONTENT';
         userRating = 'r';
     }
-    await fetchThenUpdateArray("change");
+    await fetchThenUpdateArray();
 })
 
 //image cycling
